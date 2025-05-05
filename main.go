@@ -1,16 +1,5 @@
 package main
 
-/*
-Qs
-- don't need to store list of Items and data structure - should be able to wrap each of them when necessary
-- cast it as type, modify it, sub it back in as interface
-*/
-
-/* functionality
-- add tasks to current list
-- edit selected task
-*/
-
 import (
 	"fmt"
 	"os"
@@ -36,7 +25,8 @@ const (
 )
 
 const (
-	divisor = 4
+	widthDivisor  = 3
+	heightDivisor = 4
 )
 
 var (

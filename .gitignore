@@ -2,3 +2,5 @@ coverage.txt
 debug.log
 dist/
 *.log
+.DS_Store
+*.json

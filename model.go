@@ -37,8 +37,9 @@ func newKanban() Kanban {
 
 func (k *Kanban) initLists(width, height int) {
 	// init list model
-	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/divisor, height-divisor*2)
-	defaultList.SetShowHelp(false)
+	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/widthDivisor-6, height/heightDivisor*2)
+	defaultList.SetShowHelp(true)
+	defaultList.SetFilteringEnabled(false)
 	k.lists = []list.Model{defaultList, defaultList, defaultList}
 
 	//add items from storage
@@ -83,20 +84,29 @@ func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// TODO: check if this is where they put custom messages in other examples
 	case tea.WindowSizeMsg:
 		if !k.loaded {
-			columnStyle.Width(msg.Width / divisor)
-			focusedStyle.Width(msg.Width / divisor)
-			columnStyle.Height(msg.Height / divisor)
-			focusedStyle.Height(msg.Height / divisor)
+			columnStyle.Width(msg.Width/widthDivisor - 2)
+			focusedStyle.Width(msg.Width/widthDivisor - 2)
+			columnStyle.Height(msg.Height/heightDivisor - 2)
+			focusedStyle.Height(msg.Height/heightDivisor - 2)
 			k.initLists(msg.Width, msg.Height)
 			k.loaded = true
 		}
 	case tea.KeyMsg:
-		if key.Matches(msg, QuitKeys) {
+		if key.Matches(msg, QuitKeys) && (k.lists[k.focus].FilterState() != list.Filtering) {
 			k.quitting = true
 			WriteToStorage(k)
 			return k, tea.Quit
 		}
 		switch msg.String() {
+		case "ctrl+f":
+			if k.lists[k.focus].FilterState() != list.Filtering {
+				k.lists[k.focus].SetFilteringEnabled(true)
+				currList, cmd := k.lists[k.focus].Update(msg)
+				k.lists[k.focus] = currList
+				return k, cmd
+			} else {
+				return k, nil
+			}
 		case "right":
 			k.Next()
 		case "left":
@@ -114,8 +124,10 @@ func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// form model each time, but I'm keeping it in this case so you can
 			// see what it looks like with a list of models }
 		case "x":
-			index := k.lists[k.focus].Index()
-			k.lists[k.focus].RemoveItem(index)
+			if k.lists[k.focus].FilterState() != list.Filtering {
+				index := k.lists[k.focus].Index()
+				k.lists[k.focus].RemoveItem(index)
+			}
 		}
 	case Task:
 		task := msg
@@ -144,19 +156,12 @@ func (k Kanban) View() string {
 		return ""
 	}
 
-	//var cols []string
 	if k.loaded {
 		todoView := k.lists[todo].View()
 		inProgView := k.lists[inProgress].View()
 		doneView := k.lists[done].View()
 		switch k.focus {
 		case inProgress:
-			// cols = []string{
-			// 	columnStyle.Render(todoView),
-			// 	focusedStyle.Render(inProgView),
-			// 	columnStyle.Render(doneView),
-			// }
-
 			return lipgloss.JoinHorizontal(
 				lipgloss.Left,
 				columnStyle.Render(todoView),
@@ -164,25 +169,13 @@ func (k Kanban) View() string {
 				columnStyle.Render(doneView),
 			)
 		case done:
-			// cols = []string{
-			// 	columnStyle.Render(todoView),
-			// 	columnStyle.Render(inProgView),
-			// 	focusedStyle.Render(doneView),
-			// }
-
 			return lipgloss.JoinHorizontal(
 				lipgloss.Left,
 				columnStyle.Render(todoView),
 				columnStyle.Render(inProgView),
 				focusedStyle.Render(doneView),
 			)
-		default:
-			// cols = []string{
-			// 	focusedStyle.Render(todoView),
-			// 	columnStyle.Render(inProgView),
-			// 	columnStyle.Render(doneView),
-			// }
-
+		case todo:
 			return lipgloss.JoinHorizontal(
 				lipgloss.Left,
 				focusedStyle.Render(todoView),
@@ -190,8 +183,9 @@ func (k Kanban) View() string {
 				columnStyle.Render(doneView),
 			)
 		}
-		//return lipgloss.JoinHorizontal(lipgloss.Left, cols...)
+
 	} else {
 		return "Loading..."
 	}
+	return ""
 }

@@ -8,5 +8,4 @@ type (
 
 var QuitKeys = key.NewBinding(
 	key.WithKeys("q", "ctrl+c"),
-	key.WithHelp("", "press q to quit"),
 )

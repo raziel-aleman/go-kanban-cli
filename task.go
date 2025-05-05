@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 type Task struct {
 	status      status
 	title       string
@@ -7,7 +9,7 @@ type Task struct {
 }
 
 func (t Task) FilterValue() string {
-	return t.title
+	return strings.ToLower(t.title)
 }
 
 func (t Task) Title() string {

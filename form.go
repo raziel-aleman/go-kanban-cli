@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -32,9 +30,6 @@ func (m Form) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		if key.Matches(msg, QuitKeys) {
-			return m, tea.Quit
-		}
 		switch msg.String() {
 		case "enter":
 			if m.title.Focused() {
@@ -59,7 +54,6 @@ func (m Form) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Form) NewTask() tea.Msg {
 	task := Task{status: m.status, title: m.title.Value(), description: m.description.Value()}
-	log.Print(task)
 	return task
 }
 
