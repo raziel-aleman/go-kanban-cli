@@ -6,6 +6,7 @@ type Task struct {
 	status      status
 	title       string
 	description string
+	edited      bool
 }
 
 func (t Task) FilterValue() string {

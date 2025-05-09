@@ -10,16 +10,19 @@ import (
 type Todo struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Edited      bool   `json:"edited"`
 }
 
 type InProgress struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Edited      bool   `json:"edited"`
 }
 
 type Done struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Edited      bool   `json:"edited"`
 }
 
 // JSON-to-Go is amazeballs https://mholt.github.io/json-to-go/
@@ -54,15 +57,15 @@ func WriteToStorage(m Kanban) {
 	var columns Columns
 
 	for _, element := range m.lists[todo].Items() {
-		columns.Todo = append(columns.Todo, Todo{element.(Task).Title(), element.(Task).Description()})
+		columns.Todo = append(columns.Todo, Todo{element.(Task).Title(), element.(Task).Description(), element.(Task).edited})
 	}
 
 	for _, element := range m.lists[inProgress].Items() {
-		columns.InProgress = append(columns.InProgress, InProgress{element.(Task).Title(), element.(Task).Description()})
+		columns.InProgress = append(columns.InProgress, InProgress{element.(Task).Title(), element.(Task).Description(), element.(Task).edited})
 	}
 
 	for _, element := range m.lists[done].Items() {
-		columns.Done = append(columns.Done, Done{element.(Task).Title(), element.(Task).Description()})
+		columns.Done = append(columns.Done, Done{element.(Task).Title(), element.(Task).Description(), element.(Task).edited})
 	}
 
 	storageFile := "storage.json"

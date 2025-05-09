@@ -1,15 +1,23 @@
 {
  "todo": [
   {
-   "title": "test",
-   "description": "edit task"
+   "title": "view task",
+   "description": "implement view task when description is truncated in the Kanban board due to it's length",
+   "edited": false
   }
  ],
- "inProgress": null,
+ "inProgress": [
+  {
+   "title": "coding",
+   "description": "create Kanban board cli app with golang",
+   "edited": false
+  }
+ ],
  "done": [
   {
-   "title": "lunch",
-   "description": "defrost bread"
+   "title": "hydrate",
+   "description": "drink water",
+   "edited": false
   }
  ]
 }

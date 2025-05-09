@@ -40,6 +40,7 @@ func (k *Kanban) initLists(width, height int) {
 	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/widthDivisor-6, height/heightDivisor*2)
 	defaultList.SetShowHelp(true)
 	defaultList.SetFilteringEnabled(false)
+	defaultList.FilterInput.SetValue("")
 	k.lists = []list.Model{defaultList, defaultList, defaultList}
 
 	//add items from storage
@@ -55,17 +56,17 @@ func (k *Kanban) initLists(width, height int) {
 	doneItems := []list.Item{}
 
 	for _, value := range columns.Todo {
-		task := Task{todo, value.Title, value.Description}
+		task := Task{todo, value.Title, value.Description, false}
 		todoItems = append(todoItems, task)
 	}
 
 	for _, value := range columns.InProgress {
-		task := Task{inProgress, value.Title, value.Description}
+		task := Task{inProgress, value.Title, value.Description, false}
 		inProgressItems = append(inProgressItems, task)
 	}
 
 	for _, value := range columns.Done {
-		task := Task{done, value.Title, value.Description}
+		task := Task{done, value.Title, value.Description, false}
 		doneItems = append(doneItems, task)
 	}
 
@@ -81,7 +82,6 @@ func (k Kanban) Init() tea.Cmd {
 func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
-	// TODO: check if this is where they put custom messages in other examples
 	case tea.WindowSizeMsg:
 		if !k.loaded {
 			columnStyle.Width(msg.Width/widthDivisor - 2)
@@ -98,7 +98,7 @@ func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return k, tea.Quit
 		}
 		switch msg.String() {
-		case "ctrl+f":
+		case "f":
 			if k.lists[k.focus].FilterState() != list.Filtering {
 				k.lists[k.focus].SetFilteringEnabled(true)
 				currList, cmd := k.lists[k.focus].Update(msg)
@@ -116,21 +116,39 @@ func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			k.Next()
 			return k, nil
 		case "n":
-			// save state of current model before switching models
-			models[tasks] = k
-			models[input] = newForm(k.focus)
-			return models[input].Update(nil)
-			// Note: I don't need a list of models, I can just return a new
-			// form model each time, but I'm keeping it in this case so you can
-			// see what it looks like with a list of models }
+			if k.lists[k.focus].FilterState() != list.Filtering {
+				// save state of current model before switching models
+				models[tasks] = k
+				models[input] = newForm(k.focus)
+				return models[input].Update(nil)
+			}
 		case "x":
 			if k.lists[k.focus].FilterState() != list.Filtering {
 				index := k.lists[k.focus].Index()
 				k.lists[k.focus].RemoveItem(index)
 			}
+		case "ctrl+n":
+			currentList := k.lists[k.focus]
+			selectedItem := currentList.SelectedItem()
+
+			if selectedItem != nil {
+				taskToEdit, ok := selectedItem.(Task)
+				if ok {
+					// Save the current model before switcing models
+					models[tasks] = k
+					models[input] = newEditForm(taskToEdit)
+					return models[input].Update(nil)
+				}
+			}
+			// If no item selected, or cast failed, stay on the current model
+			return k, nil
 		}
 	case Task:
 		task := msg
+		if task.edited {
+			index := k.lists[k.focus].Index()
+			return k, k.lists[task.status].SetItem(index, task)
+		}
 		return k, k.lists[task.status].InsertItem(len(k.lists[task.status].Items()), task)
 	}
 	currList, cmd := k.lists[k.focus].Update(msg)

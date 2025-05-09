@@ -13,11 +13,19 @@ type Form struct {
 	status      status
 	title       textinput.Model
 	description textarea.Model
+	edited      bool
 }
 
 func newForm(state status) *Form {
-	form := &Form{status: state, description: textarea.New()}
-	form.title = textinput.New()
+	form := &Form{status: state, title: textinput.New(), description: textarea.New(), edited: false}
+	form.title.Focus()
+	return form
+}
+
+func newEditForm(task Task) *Form {
+	form := &Form{status: task.status, title: textinput.New(), description: textarea.New(), edited: true}
+	form.title.SetValue(task.title)
+	form.description.SetValue(task.description)
 	form.title.Focus()
 	return form
 }
@@ -39,8 +47,13 @@ func (m Form) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				// switch to previous model, add task
 				models[input] = m
+				if m.edited {
+					return models[tasks], m.EditedTask
+				}
 				return models[tasks], m.NewTask
 			}
+		case "esc":
+			return models[tasks], nil
 		}
 	}
 	if m.title.Focused() {
@@ -53,7 +66,12 @@ func (m Form) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Form) NewTask() tea.Msg {
-	task := Task{status: m.status, title: m.title.Value(), description: m.description.Value()}
+	task := Task{status: m.status, title: m.title.Value(), description: m.description.Value(), edited: false}
+	return task
+}
+
+func (m Form) EditedTask() tea.Msg {
+	task := Task{status: m.status, title: m.title.Value(), description: m.description.Value(), edited: true}
 	return task
 }
 
@@ -64,7 +82,7 @@ func (m Form) helpMenu() string {
 	} else {
 		msg = "submit"
 	}
-	return helpStyle.Render(fmt.Sprintf("enter: %s", msg))
+	return helpStyle.Render(fmt.Sprintf("enter: %s • esc cancel", msg))
 }
 
 func (m Form) View() string {

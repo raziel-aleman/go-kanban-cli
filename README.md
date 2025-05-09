@@ -4,7 +4,7 @@ A simple terminal-based Kanban board application built with Go and the Bubble Te
 
 ## Features
 
-* Task management: Add, move, and delete tasks.
+* Task management: Add, move, edit, and delete tasks.
 * Column navigation: Easily switch between To Do, In Progress, and Done columns.
 * Persistence: Saves your board state to a file so your tasks are still there next time you run the app.
 * Filtering: Quickly find tasks within a column.
@@ -32,9 +32,9 @@ The application uses simple keybindings for interaction:
 * **Left Arrow (`←`) / Right Arrow (`→`):** Change focus between the To Do, In Progress, and Done columns.
 * **Up Arrow (`↑`) / Down Arrow (`↓`):** Navigate through the tasks within the currently focused column.
 * **Enter (`⏎`):** Move the selected task to the next column (To Do -> In Progress -> Done -> To Do).
-* **n:** Initiate adding a new task (this will likely switch to an input form, assuming you have implemented that part).
+* **n:** Initiate adding a new task (this will switch to an input form).
 * **x:** Delete the selected task from the current column.
-* **/:** Enable filtering for the currently focused list. Start typing to filter tasks.
+* **f:** Enable filtering for the currently focused list. Activate/deactive filtering with **"/"** once filtering is enabled.
 * **Ctrl+C / q:** Quit the application. Your board state will be saved automatically on quitting.
 
 ## Project Structure
@@ -43,11 +43,9 @@ The application uses simple keybindings for interaction:
 * `model.go`: Contains the main application logic, the Bubble Tea model (`Kanban`), and the `Update`, `View`, and `Init` methods.
 * `task.go`: Defines the `Task` struct and related methods.
 * `form.go`: Defines the `Form` struct and related methods.
-* `datastore.go`: Defines logic to handle to read from storage and write to storage.
-* `storage.json`: Prersistent storage.
+* `datastore.go`: Defines methods to read from storage and write to storage.
+* `storage.json`: Persistent storage.
 * `constants.go`: Defines keybindings like `QuitKeys`.
-
-*(Adjust these assumed files based on your actual project structure)*
 
 ## Dependencies
 
@@ -58,11 +56,7 @@ This project relies on the following Go modules:
 * `github.com/charmbracelet/bubbles/list`
 * `github.com/charmbracelet/lipgloss`
 
-These dependencies will be automatically downloaded when you run `go run .` or build the project (`go build`).
-
-## Contributing
-
-(Add information on how others can contribute, if applicable)
+These dependencies will be automatically synced when you run `go mod tidy`.
 
 ## License
 
