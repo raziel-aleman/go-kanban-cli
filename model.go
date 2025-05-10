@@ -37,7 +37,7 @@ func newKanban() Kanban {
 
 func (k *Kanban) initLists(width, height int) {
 	// init list model
-	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/widthDivisor-6, height/heightDivisor*2)
+	defaultList := list.New([]list.Item{}, NewTaskDelegate(), width/widthDivisor-6, height/heightDivisor-2) //width/widthDivisor-6, height/heightDivisor*2)
 	defaultList.SetShowHelp(true)
 	defaultList.SetFilteringEnabled(false)
 	defaultList.FilterInput.SetValue("")
@@ -86,8 +86,8 @@ func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if !k.loaded {
 			columnStyle.Width(msg.Width/widthDivisor - 2)
 			focusedStyle.Width(msg.Width/widthDivisor - 2)
-			columnStyle.Height(msg.Height/heightDivisor - 2)
-			focusedStyle.Height(msg.Height/heightDivisor - 2)
+			columnStyle.Height(msg.Height / heightDivisor)
+			focusedStyle.Height(msg.Height / heightDivisor)
 			k.initLists(msg.Width, msg.Height)
 			k.loaded = true
 		}
@@ -193,7 +193,7 @@ func (k Kanban) View() string {
 				columnStyle.Render(inProgView),
 				focusedStyle.Render(doneView),
 			)
-		case todo:
+		default:
 			return lipgloss.JoinHorizontal(
 				lipgloss.Left,
 				focusedStyle.Render(todoView),
@@ -205,5 +205,4 @@ func (k Kanban) View() string {
 	} else {
 		return "Loading..."
 	}
-	return ""
 }

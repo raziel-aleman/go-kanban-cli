@@ -39,7 +39,7 @@ func (m Form) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "enter":
+		case "tab":
 			if m.title.Focused() {
 				m.title.Blur()
 				m.description.Focus()
@@ -82,7 +82,7 @@ func (m Form) helpMenu() string {
 	} else {
 		msg = "submit"
 	}
-	return helpStyle.Render(fmt.Sprintf("enter: %s • esc cancel", msg))
+	return helpStyle.Render(fmt.Sprintf("tab: %s • esc cancel", msg))
 }
 
 func (m Form) View() string {
