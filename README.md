@@ -1,6 +1,6 @@
 # Simple Kanban CLI
 
-A simple terminal-based Kanban board application built with Go and the Bubble Tea TUI library. Organize your tasks in a To Do, In Progress, and Done column directly from your command line.
+A simple terminal-based Kanban board application built with Go and the Bubble Tea TUI library. Organize your tasks in a To Do, In Progress, and Done columns directly from your command line.
 
 ## Features
 
@@ -33,8 +33,10 @@ The application uses simple keybindings for interaction:
 * **Up Arrow (`↑`) / Down Arrow (`↓`):** Navigate through the tasks within the currently focused column.
 * **Enter (`⏎`):** Move the selected task to the next column (To Do -> In Progress -> Done -> To Do).
 * **n:** Initiate adding a new task (this will switch to an input form).
+* **Ctrl+n:** Initiate editing the selected task (this will switch to an input form).
 * **x:** Delete the selected task from the current column.
-* **f:** Enable filtering for the currently focused list. Activate/deactive filtering with **"/"** once filtering is enabled.
+* **f:** Enable filtering for the currently focused column.
+* **/:** Activate/deactive filter once filtering is enabled with "f". Start typing 
 * **Ctrl+C / q:** Quit the application. Your board state will be saved automatically on quitting.
 
 ## Project Structure

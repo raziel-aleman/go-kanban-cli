@@ -163,7 +163,8 @@ func (k *Kanban) MoveToNext() tea.Msg {
 		selectedTask := selectedItem.(Task)
 		k.lists[selectedTask.status].RemoveItem(k.lists[k.focus].Index())
 		selectedTask.Next()
-		k.lists[selectedTask.status].InsertItem(len(k.lists[selectedTask.status].Items())+1, list.Item(selectedTask))
+		k.lists[selectedTask.status].InsertItem(len(k.lists[selectedTask.status].Items()), list.Item(selectedTask))
+		k.lists[selectedTask.status].Select(len(k.lists[selectedTask.status].Items()) - 1)
 	}
 
 	return nil

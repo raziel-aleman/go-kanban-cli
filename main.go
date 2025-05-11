@@ -26,7 +26,7 @@ const (
 
 const (
 	widthDivisor  = 3
-	heightDivisor = 4
+	heightDivisor = 2
 )
 
 var (
