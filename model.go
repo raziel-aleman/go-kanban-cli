@@ -107,9 +107,9 @@ func (k Kanban) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				return k, nil
 			}
-		case "right":
+		case "right", "l":
 			k.Next()
-		case "left":
+		case "left", "h":
 			k.Prev()
 		case "enter":
 			k.MoveToNext()

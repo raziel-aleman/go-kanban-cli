@@ -105,7 +105,7 @@ func (d TaskDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 		if isFiltered {
 			// Highlight matches
 			unmatched := s.SelectedTitle.Inline(true)
-			matched := unmatched.Copy().Inherit(s.FilterMatch)
+			matched := unmatched.Inherit(s.FilterMatch)
 			title = lipgloss.StyleRunes(title, matchedRunes, matched, unmatched)
 		}
 		title = s.SelectedTitle.Render(title)
@@ -114,7 +114,7 @@ func (d TaskDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 		if isFiltered {
 			// Highlight matches
 			unmatched := s.NormalTitle.Inline(true)
-			matched := unmatched.Copy().Inherit(s.FilterMatch)
+			matched := unmatched.Inherit(s.FilterMatch)
 			title = lipgloss.StyleRunes(title, matchedRunes, matched, unmatched)
 		}
 		title = s.NormalTitle.Render(title)

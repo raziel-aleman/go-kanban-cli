@@ -46,8 +46,8 @@ func main() {
 	models = []tea.Model{newKanban(), newForm(todo)}
 
 	p := tea.NewProgram(models[tasks])
-	if err := p.Start(); err != nil {
-		fmt.Println(err)
+	if _, err := p.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v", err)
 		os.Exit(1)
 	}
 }

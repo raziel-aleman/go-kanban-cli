@@ -6,7 +6,7 @@ A simple terminal-based Kanban board application built with Go and the Bubble Te
 
 * Task management: Add, move, edit, and delete tasks.
 * Column navigation: Easily switch between To Do, In Progress, and Done columns.
-* Persistence: Saves your board state to a file so your tasks are still there next time you run the app.
+* Persistence: Saves your board state to a JSON file so your tasks are still there next time you run the app.
 * Filtering: Quickly find tasks within a column.
 * Clean TUI interface using Lipgloss.
 
@@ -31,12 +31,13 @@ The application uses simple keybindings for interaction:
 
 * **Left Arrow (`←`) / Right Arrow (`→`):** Change focus between the To Do, In Progress, and Done columns.
 * **Up Arrow (`↑`) / Down Arrow (`↓`):** Navigate through the tasks within the currently focused column.
+* **Vim** style cursor movement available with hjkl keys.
 * **Enter (`⏎`):** Move the selected task to the next column (To Do -> In Progress -> Done -> To Do).
 * **n:** Initiate adding a new task (this will switch to an input form).
 * **Ctrl+n:** Initiate editing the selected task (this will switch to an input form).
 * **x:** Delete the selected task from the current column.
 * **f:** Enable filtering for the currently focused column.
-* **/:** Activate/deactive filter once filtering is enabled with "f". Start typing 
+* **/:** Activate/deactivate filter once filtering is enabled with "f". Start typing to filter tasks by title.
 * **Ctrl+C / q:** Quit the application. Your board state will be saved automatically on quitting.
 
 ## Project Structure
